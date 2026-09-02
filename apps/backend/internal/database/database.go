@@ -1,10 +1,4 @@
-// Package database:
-//
-// contains all the logic related to
-//
-// connecting to a PostgreSQL connection pool
-//
-// Redis and handling migrations
+// Package database contains all the logic related to connecting to a PostgreSQL connection pool Redis client and handles migrations
 package database
 
 import (
@@ -89,7 +83,7 @@ func New(cfg *config.Config, logger *zerolog.Logger, loggerService *loggerpkg.Lo
 		pgxLogger := loggerpkg.NewPgxLogger(globalLevel)
 		// Chain tracer - New Relic first, then local logging
 		if pgxPoolConfig.ConnConfig.Tracer != nil {
-			// If New Relic tracer exists, create multi-tracers
+			// If New Relic tracer exists, create multi-tracer
 			localTracer := tracelog.TraceLog{
 				Logger:   pgxzero.NewLogger(pgxLogger),
 				LogLevel: tracelog.LogLevel(loggerpkg.GetPgxTraceLogLevel(globalLevel)),
@@ -124,4 +118,11 @@ func New(cfg *config.Config, logger *zerolog.Logger, loggerService *loggerpkg.Lo
 
 	logger.Info().Str("component", "database").Msg("Connected to PostgreSQL successfully")
 	return database, nil
+}
+
+// Close closes all connections in the pool and rejects future Pool.Acquire calls. Blocks until all connections are returned to pool and closed.
+func (db *Database) Close() error {
+	db.log.Info().Msg("closing database connection pool")
+	db.Pool.Close()
+	return nil
 }
