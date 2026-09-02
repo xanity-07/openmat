@@ -5,7 +5,6 @@ import (
 	"encoding/json/v2"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"time"
 
@@ -52,7 +51,7 @@ func NewLoggerService(cfg *config.ObservabilityConfig) *LoggerService {
 	// Assigning the New Relic application to the service
 	service.nrApp = app
 
-	log.Println("New Relic application initialized for service: %s", cfg.ServiceName)
+	fmt.Printf("New Relic application initialized for service: %s\n", cfg.ServiceName)
 	return service
 }
 
