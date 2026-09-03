@@ -122,7 +122,7 @@ func New(cfg *config.Config, logger *zerolog.Logger, loggerService *loggerpkg.Lo
 
 // Close closes all connections in the pool and rejects future Pool.Acquire calls. Blocks until all connections are returned to pool and closed.
 func (db *Database) Close() error {
-	db.log.Info().Msg("closing database connection pool")
+	db.log.Info().Msg("Closing PostgreSQL connection pool")
 	db.Pool.Close()
 	return nil
 }
