@@ -136,7 +136,7 @@ func NewLoggerWithService(cfg *config.ObservabilityConfig, loggerService *Logger
 		Str("environment", cfg.Environment).
 		Logger()
 
-	if cfg.IsProduction() {
+	if !cfg.IsProduction() {
 		logger.With().Stack().Logger()
 	}
 
