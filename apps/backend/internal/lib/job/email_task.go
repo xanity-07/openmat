@@ -1,0 +1,34 @@
+package job
+
+import (
+	"encoding/json/v2"
+	"time"
+
+	"github.com/hibiken/asynq"
+)
+
+const (
+	TaskWelcome = "email:welcome"
+)
+
+type WelcomeEmailPayload struct {
+	To        string `json:"to"`
+	FirstName string `json:"firstName"`
+}
+
+func NewWelcomeEmailTask(to string, firstName string) (*asynq.Task, error) {
+	payload, err := json.Marshal(WelcomeEmailPayload{
+		To:        to,
+		FirstName: firstName,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return asynq.NewTask(
+		TaskWelcome, payload,
+		asynq.MaxRetry(3),
+		asynq.Queue("default"),
+		asynq.Timeout(time.Second*30),
+	), nil
+}
