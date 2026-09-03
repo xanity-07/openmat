@@ -12,6 +12,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/xanity-07/openmat/internal/config"
 	"github.com/xanity-07/openmat/internal/database"
+	"github.com/xanity-07/openmat/internal/lib/job"
 	"github.com/xanity-07/openmat/internal/loggerpkg"
 )
 
@@ -21,6 +22,7 @@ type Server struct {
 	Redis         *redis.Client
 	Logger        *zerolog.Logger
 	LoggerService *loggerpkg.LoggerService
+	Job           *job.JobService
 	httpServer    *http.Server
 }
 
@@ -31,12 +33,22 @@ func New(cfg *config.Config, logger *zerolog.Logger, loggerService *loggerpkg.Lo
 		return nil, fmt.Errorf("failed to initialize database: %w", err)
 	}
 
+	// Initialize background job services
+	jobService := job.NewJobService(cfg, logger)
+	jobService.InitHandlers(cfg, logger)
+
+	// Start the job server
+	if err := jobService.Start(); err != nil {
+		return nil, err
+	}
+
 	server := &Server{
 		Config:        cfg,
 		DB:            db,
 		Redis:         redis,
 		Logger:        logger,
 		LoggerService: loggerService,
+		Job:           jobService,
 	}
 
 	// Start metrics collection
@@ -77,10 +89,15 @@ func (s *Server) Shutdown(ctx context.Context) error {
 		return fmt.Errorf("failed to close Redis connection: %w", err)
 	}
 
-	s.Logger.Info().Msg("closing Redis connection")
+	s.Logger.Info().Msg("Closing Redis connection")
 
 	if err := s.DB.Close(); err != nil {
 		return fmt.Errorf("failed to close PostgreSQL connection")
+	}
+
+	if s.Job != nil {
+		s.Logger.Info().Msg("Shutting down our background job service")
+		s.Job.Stop()
 	}
 
 	return nil
