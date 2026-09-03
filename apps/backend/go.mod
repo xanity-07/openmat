@@ -8,7 +8,7 @@ require (
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/jackc/tern/v2 v2.4.3
 	github.com/joho/godotenv v1.5.1
-	github.com/knadh/koanf/providers/env v1.1.0
+	github.com/knadh/koanf/providers/env/v2 v2.0.1
 	github.com/knadh/koanf/v2 v2.3.6
 	github.com/newrelic/go-agent/v3 v3.44.2
 	github.com/newrelic/go-agent/v3/integrations/logcontext-v2/zerologWriter v1.0.5
