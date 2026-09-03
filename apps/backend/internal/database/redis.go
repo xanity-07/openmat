@@ -31,7 +31,7 @@ func NewRedis(cfg *config.Config, logger *zerolog.Logger, loggerService *loggerp
 	if err := rdb.Ping(ctx).Err(); err != nil {
 		logger.Error().Err(err).Msg("failed to connect to redis, continuing without Redis")
 	} else {
-		logger.Info().Str("component", "Redis").Msg("connected to Redis")
+		logger.Info().Str("component", "Redis").Msg("Connected to Redis successfully")
 	}
 
 	return rdb, nil

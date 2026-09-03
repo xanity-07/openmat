@@ -59,7 +59,7 @@ func New(cfg *config.Config, logger *zerolog.Logger, loggerService *loggerpkg.Lo
 	// URL-encoded password
 	encodedPassword := url.QueryEscape(cfg.Database.Password)
 	dsn := fmt.Sprintf(
-		"postgres://%s@%s:%s/%s?sslmode=%s",
+		"postgres://%s:%s@%s/%s?sslmode=%s",
 		cfg.Database.User,
 		encodedPassword,
 		hostPort,

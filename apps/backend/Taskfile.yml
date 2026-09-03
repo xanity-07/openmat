@@ -26,6 +26,26 @@ tasks:
     cmds:
       - go run ./cmd/openmat/main.go
 
+  dev:
+    desc: run docker compose up --build
+    cmds:
+      - docker compose up --build
+
+  down:
+    desc: run docker compose down
+    cmds:
+      - docker compose down
+
+  down:volumes:
+    desc: docker compose down and nuke database
+    cmds:
+      - docker compose down -v
+
+  logs:
+    desc: get docker logs
+    cmds:
+      - docker compose logs -f openmat
+
   migrations:new:
     desc: create a new database migration
     vars:
@@ -40,14 +60,6 @@ tasks:
       - tern new -m ./internal/database/migrations {{.NAME}}
 
   migrations:down:
-    desc: rollback all database migrations to zero
-    deps: [confirm]
-    dotenv: [".env"]
-    cmds:
-      - echo 'Rolling back all migrations...'
-      - tern migrate -m ./internal/database/migrations --conn-string "$TERN_DSN" --destination 0
-
-  migrations:down:one:
     desc: rollback the single most recent migration
     deps: [confirm]
     dotenv: [".env"]

@@ -1,7 +1,27 @@
 package main
 
-import "fmt"
+import (
+	"github.com/xanity-07/openmat/internal/config"
+	"github.com/xanity-07/openmat/internal/database"
+	"github.com/xanity-07/openmat/internal/loggerpkg"
+)
 
 func main() {
-	fmt.Println("Hello from Open mat!!")
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		panic("failed to load app configurations")
+	}
+
+	loggerService := loggerpkg.NewLoggerService(cfg.Observability)
+	log := loggerpkg.NewLoggerWithService(cfg.Observability, loggerService)
+
+	_, err = database.New(cfg, &log, loggerService)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to initialize PostgreSQL")
+	}
+
+	_, err = database.NewRedis(cfg, &log, loggerService)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to initialize Redis")
+	}
 }

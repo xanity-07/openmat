@@ -6,8 +6,10 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
-	_ "github.com/joho/godotenv/autoload" // Auto loads all env variables from .env
-	"github.com/knadh/koanf/providers/env"
+	"github.com/joho/godotenv"
+
+	// _ "github.com/joho/godotenv/autoload" // Auto loads all env variables from .env
+	"github.com/knadh/koanf/providers/env/v2"
 	"github.com/knadh/koanf/v2"
 	"github.com/rs/zerolog"
 )
@@ -57,11 +59,20 @@ type AuthConfig struct {
 func LoadConfig() (*Config, error) {
 	logger := zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr}).With().Timestamp().Logger()
 
-	k := koanf.New("")
+	k := koanf.New(".")
+	if os.Getenv("OPENMAT_ENV") != "docker" {
+		if err := godotenv.Load(); err != nil {
+			logger.Warn().Err(err).Msg("failed to load .env")
+		}
+	}
 
-	// Load all env variables
-	err := k.Load(env.Provider("OPENMAT_", ".", func(s string) string {
-		return strings.ToLower(strings.TrimPrefix(s, "OPENMAT_"))
+	err := k.Load(env.Provider(".", env.Opt{
+		Prefix: "OPENMAT_",
+		TransformFunc: func(k string, v string) (string, any) {
+			k = strings.ToLower(strings.TrimPrefix(k, "OPENMAT_"))
+			k = strings.ReplaceAll(k, "__", ".")
+			return k, v
+		},
 	}), nil)
 	if err != nil {
 		logger.Fatal().Err(err).Msg("failed to load initial env variables")

@@ -1,0 +1,17 @@
+.git
+.gitignore
+
+.env
+.env.*
+!.env.example
+
+tmp
+bin
+coverage
+*.log
+
+.vscode
+.idea
+node_modules
+
+compose.yml

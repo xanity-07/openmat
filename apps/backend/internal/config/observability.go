@@ -27,8 +27,8 @@ type NewRelicConfig struct {
 
 type HealthChecksConfig struct {
 	Enabled  bool          `koanf:"enabled"`
-	Timeout  time.Duration `koanf:"timeout" validate:"min=1s"`
 	Interval time.Duration `koanf:"interval" validate:"min=1s"`
+	Timeout  time.Duration `koanf:"timeout" validate:"min=1s"`
 	Checks   []string      `koanf:"checks"`
 }
 
@@ -48,8 +48,8 @@ func DefaultObservabilityConfig() *ObservabilityConfig {
 		},
 		HealthChecks: HealthChecksConfig{
 			Enabled:  false,
-			Timeout:  30,
-			Interval: 5,
+			Interval: 30,
+			Timeout:  5,
 			Checks:   []string{"database", "redis"},
 		},
 	}
