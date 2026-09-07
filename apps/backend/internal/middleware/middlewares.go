@@ -1,6 +1,9 @@
 package middleware
 
-import "github.com/xanity-07/openmat/internal/server"
+import (
+	"github.com/newrelic/go-agent/v3/newrelic"
+	"github.com/xanity-07/openmat/internal/server"
+)
 
 type Middlewares struct {
 	TracingMiddleware *TracingMiddleware
@@ -10,7 +13,11 @@ type Middlewares struct {
 }
 
 func NewMiddlewares(s *server.Server) *Middlewares {
-	nrApp := s.LoggerService.GetApplication()
+	var nrApp *newrelic.Application
+
+	if s.LoggerService != nil {
+		nrApp = s.LoggerService.GetApplication()
+	}
 
 	return &Middlewares{
 		TracingMiddleware: NewTracingMiddleware(s, nrApp),
