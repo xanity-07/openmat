@@ -22,8 +22,7 @@ func Migrate(ctx context.Context, cfg *config.Config, logger *zerolog.Logger) er
 
 	// URL-encode the password
 	encodedPassword := url.QueryEscape(cfg.Database.Password)
-	dsn := fmt.Sprintf(
-		"postgres://%s:%s@%s/%s?sslmode=%s",
+	dsn := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s",
 		cfg.Database.User,
 		encodedPassword,
 		hostPort,
