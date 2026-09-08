@@ -72,6 +72,7 @@ func (r *RateLimitMiddleware) RateLimiter() gin.HandlerFunc {
 
 		cl.lastSeen = time.Now()
 		allowed := cl.limiter.Allow()
+		r.RecordRateLimitHit(ip)
 		mu.Unlock()
 
 		if !allowed {
