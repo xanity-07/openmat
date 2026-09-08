@@ -2,6 +2,8 @@
 package job
 
 import (
+	"strings"
+
 	"github.com/hibiken/asynq"
 	"github.com/rs/zerolog"
 	"github.com/xanity-07/openmat/internal/config"
@@ -14,7 +16,7 @@ type JobService struct {
 }
 
 func NewJobService(cfg *config.Config, logger *zerolog.Logger) *JobService {
-	redisAddr := cfg.Redis.Address
+	redisAddr := strings.TrimPrefix(cfg.Redis.Address, "redis://")
 
 	client := asynq.NewClient(asynq.RedisClientOpt{
 		Addr: redisAddr,
