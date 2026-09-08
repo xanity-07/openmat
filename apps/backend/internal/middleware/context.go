@@ -61,7 +61,7 @@ func (ce *ContextEnhancer) EnhanceContext() gin.HandlerFunc {
 		}
 
 		// Store the enhanced logger in the context so that in our downstream layers
-		// handler -> service -> repository etc, can use the same instance of the logger
+		// handler -> service -> repository ect, can use the same instance of the logger
 		// so that all the components it touched are grouped to be part of the same interaction
 		c.Set(LoggerKey, &contextLogger)
 

@@ -10,7 +10,7 @@ const (
 	RequestIDKey    = "request_id"
 )
 
-// RequestID gives a identifier to every request so the whole request life-cycle so interactions from all our components can be grouped into one transaction
+// RequestID identifier to every request so the whole request life-cycle so interactions from all our components can be grouped into one transaction
 func RequestID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		requestID := c.GetHeader(RequestIDHeader)
