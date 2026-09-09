@@ -60,5 +60,4 @@ func (job *JobService) Stop() {
 	job.logger.Info().Msg("Shutting background jobs")
 	job.server.Shutdown()
 	_ = job.Client.Close()
-
 }

@@ -42,7 +42,7 @@ func NewLoggerService(cfg *config.ObservabilityConfig) *LoggerService {
 		configOptions = append(configOptions, newrelic.ConfigDebugLogger(os.Stdout))
 	}
 
-	// Initializing a instance of a New Relic application if fails return empty service
+	// Initializing an instance of a New Relic application if fails return empty service
 	app, err := newrelic.NewApplication(configOptions...)
 	if err != nil {
 		return service

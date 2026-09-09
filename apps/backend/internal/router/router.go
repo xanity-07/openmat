@@ -14,7 +14,7 @@ func NewRouter(s *server.Server, h *handlers.Handlers) *gin.Engine {
 
 	// Global middleware registration
 	router.Use(
-		mw.RateLimit.RateLimiter(),
+		//mw.RateLimit.RateLimiter(),
 		mw.Global.Recover(),
 		mw.Global.CORS(),
 		mw.Global.Secure(),

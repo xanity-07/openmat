@@ -1,0 +1,25 @@
+{
+  "name": "@openmat/email",
+  "version": "1.0.0",
+  "description": "Package to manage emails",
+  "type": "module",
+  "scripts": {
+    "dev": "email dev --dir ./src/templates -p 3001",
+    "export": "email export --pretty --dir ./src/templates --outDir ../../apps/backend/templates/emails"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@react-email/components": "^1.0.12",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-email": "^6.9.3"
+  },
+  "devDependencies": {
+    "@react-email/ui": "6.9.3",
+    "@types/node": "^26.5.0",
+    "@types/react": "^19.2.18",
+    "typescript": "^7.0.2"
+  }
+}
