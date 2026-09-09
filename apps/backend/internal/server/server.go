@@ -26,7 +26,7 @@ type Server struct {
 	httpServer    *http.Server
 }
 
-// New returns a initialized server struct with all the dependencies
+// New returns an initialized server struct with all the dependencies
 func New(cfg *config.Config, logger *zerolog.Logger, loggerService *loggerpkg.LoggerService, redis *redis.Client) (*Server, error) {
 	db, err := database.New(cfg, logger, loggerService)
 	if err != nil {
@@ -61,9 +61,9 @@ func (s *Server) SetupHTTPServer(handler http.Handler) {
 	s.httpServer = &http.Server{
 		Addr:         ":" + s.Config.Server.Port,
 		Handler:      handler,
-		ReadTimeout:  time.Duration(s.Config.Server.ReadTimeout),
-		WriteTimeout: time.Duration(s.Config.Server.WriteTimeout),
-		IdleTimeout:  time.Duration(s.Config.Server.IdleTimeout),
+		ReadTimeout:  time.Duration(s.Config.Server.ReadTimeout) * time.Second,
+		WriteTimeout: time.Duration(s.Config.Server.WriteTimeout) * time.Second,
+		IdleTimeout:  time.Duration(s.Config.Server.IdleTimeout) * time.Second,
 	}
 }
 

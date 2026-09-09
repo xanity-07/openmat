@@ -11,4 +11,8 @@ func registerSystemRoutes(r *gin.Engine, h *handlers.Handlers) {
 	r.Static("/static", "static")
 
 	r.GET("/docs", h.OpenAPI.ServerOpenAPIUI)
+
+	//r.GET("/docs", func(c *gin.Context) {
+	//	c.String(200, "docs works")
+	//})
 }

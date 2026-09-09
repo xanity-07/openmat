@@ -128,10 +128,22 @@ func (global *GlobalMiddlewares) Secure() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Header("X-Frame-Options", "DENY")                                          // Click jacking via iframes
 		c.Header("X-Content-Type-Options", "nosniff")                                // MIME-type sniffing attacks
-		c.Header("Content-Security-Policy", "default-src 'self'")                    // XSS and data injection
 		c.Header("Referrer-Policy", "strict-origin")                                 // Leaking sensitive URL parameters to third parties
 		c.Header("Permissions-Policy", "geolocation=(), camera=(), microphone=()")   // Unauthorized use of browser APIs (camera, mic, etc.)
 		c.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains") // Protocol downgrade and cookie hijacking
+
+		if c.FullPath() == "/docs" {
+			// Scalar API reference needs to load its script/styles from jsdelivr
+			c.Header("Content-Security-Policy",
+				"default-src 'self'; "+
+					"script-src 'self' cdn.jsdelivr.net 'unsafe-inline'; "+
+					"style-src 'self' cdn.jsdelivr.net 'unsafe-inline'; "+
+					"img-src 'self' data: cdn.jsdelivr.net; "+
+					"font-src 'self' cdn.jsdelivr.net data:")
+		} else {
+			c.Header("Content-Security-Policy", "default-src 'self'") // XSS and data injection
+		}
+
 		c.Next()
 	}
 }
