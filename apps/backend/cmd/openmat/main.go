@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
 	"github.com/xanity-07/openmat/internal/config"
 	"github.com/xanity-07/openmat/internal/database"
 	handlers2 "github.com/xanity-07/openmat/internal/handlers"
@@ -44,12 +43,6 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to connect to redis")
 	}
-	defer func(redisClient *redis.Client) {
-		err := redisClient.Close()
-		if err != nil {
-			log.Fatal().Err(err).Msg("failed to close redis connection")
-		}
-	}(redisClient)
 
 	// Initialize server
 	srv, err := server.New(cfg, &log, loggerService, redisClient)

@@ -48,7 +48,7 @@ func (job *JobService) Start() error {
 	mux := asynq.NewServeMux()
 	mux.HandleFunc(TaskWelcome, job.handleWelcomeEmailTask)
 
-	job.logger.Info().Msg("Starting background job service")
+	job.logger.Info().Msg("Starting background jobs")
 	if err := job.server.Start(mux); err != nil {
 		return err
 	}
@@ -57,7 +57,8 @@ func (job *JobService) Start() error {
 }
 
 func (job *JobService) Stop() {
-	job.logger.Info().Msg("Stopping background job service")
+	job.logger.Info().Msg("Shutting background jobs")
 	job.server.Shutdown()
-	job.Client.Close()
+	_ = job.Client.Close()
+
 }

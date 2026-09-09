@@ -77,7 +77,11 @@ func (s *Server) Start() error {
 		Str("environment", s.Config.Primary.Env).
 		Msg("Starting server")
 
-	return s.httpServer.ListenAndServe()
+	if err := s.httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		return err
+	}
+
+	return nil
 }
 
 func (s *Server) Shutdown(ctx context.Context) error {
@@ -96,7 +100,6 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	}
 
 	if s.Job != nil {
-		s.Logger.Info().Msg("Shutting down our background job service")
 		s.Job.Stop()
 	}
 
