@@ -1,5 +1,6 @@
 import { createDocument, type ZodOpenApiObject } from 'zod-openapi';
 import { healthPaths } from './contracts/health.js';
+import {userPaths} from "@/contracts/user.js";
 
 
 const openApiConfig: ZodOpenApiObject = {
@@ -21,6 +22,7 @@ const openApiConfig: ZodOpenApiObject = {
     ],
     paths: {
         ...healthPaths,
+        ...userPaths
     },
     components: {
         schemas: {
