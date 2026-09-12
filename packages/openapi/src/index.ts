@@ -1,7 +1,7 @@
+import { userPaths } from '@/contracts/user.js';
 import { createDocument, type ZodOpenApiObject } from 'zod-openapi';
+import { authPaths } from './contracts/auth.js';
 import { healthPaths } from './contracts/health.js';
-import {userPaths} from "@/contracts/user.js";
-
 
 const openApiConfig: ZodOpenApiObject = {
     openapi: '3.1.0',
@@ -22,11 +22,11 @@ const openApiConfig: ZodOpenApiObject = {
     ],
     paths: {
         ...healthPaths,
-        ...userPaths
+        ...authPaths,
+        ...userPaths,
     },
     components: {
-        schemas: {
-        },
+        schemas: {},
         securitySchemes: {
             bearerAuth: {
                 type: 'http',

@@ -1,6 +1,9 @@
 -- Write your migrate up statements here
-SELECT 1;
-
+CREATE TYPE user_roles AS ENUM (
+    'user',
+    'admin',
+    'instructor',
+    'student'
+);
 ---- create above / drop below ----
-
-SELECT 1;
+DROP TYPE IF EXISTS user_roles;

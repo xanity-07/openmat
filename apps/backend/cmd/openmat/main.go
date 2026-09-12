@@ -11,8 +11,10 @@ import (
 	"github.com/xanity-07/openmat/internal/database"
 	handlers2 "github.com/xanity-07/openmat/internal/handlers"
 	"github.com/xanity-07/openmat/internal/loggerpkg"
+	"github.com/xanity-07/openmat/internal/repository"
 	"github.com/xanity-07/openmat/internal/router"
 	"github.com/xanity-07/openmat/internal/server"
+	"github.com/xanity-07/openmat/internal/service"
 )
 
 const DefaultContextTimeout = 10
@@ -33,7 +35,7 @@ func main() {
 	log := loggerpkg.NewLoggerWithService(cfg.Observability, loggerService)
 
 	if cfg.Primary.Env == "development" {
-		if err := database.Migrate(context.Background(), cfg, &log); err != nil {
+		if err = database.Migrate(context.Background(), cfg, &log); err != nil {
 			log.Fatal().Err(err).Msg("failed to migrate database")
 		}
 	}
@@ -51,10 +53,12 @@ func main() {
 	}
 
 	// Initialize repositories, services, handlers
-	handlers := handlers2.NewHandlers(srv)
+	repos := repository.NewRepositories(srv)
+	services := service.NewService(srv, repos)
+	handlers := handlers2.NewHandlers(srv, services)
 
 	// Initialize router
-	r := router.NewRouter(srv, handlers)
+	r := router.NewRouter(srv, handlers, cfg, repos.SessionRepo)
 
 	// Set-up HTTP server
 	srv.SetupHTTPServer(r)

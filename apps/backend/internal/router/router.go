@@ -2,12 +2,15 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/xanity-07/openmat/internal/config"
 	"github.com/xanity-07/openmat/internal/handlers"
 	"github.com/xanity-07/openmat/internal/middleware"
+	"github.com/xanity-07/openmat/internal/repository"
+	v1 "github.com/xanity-07/openmat/internal/router/v1"
 	"github.com/xanity-07/openmat/internal/server"
 )
 
-func NewRouter(s *server.Server, h *handlers.Handlers) *gin.Engine {
+func NewRouter(s *server.Server, h *handlers.Handlers, cfg *config.Config, sessionRepo *repository.SessionRepository) *gin.Engine {
 	mw := middleware.NewMiddlewares(s)
 
 	router := gin.New()
@@ -28,8 +31,9 @@ func NewRouter(s *server.Server, h *handlers.Handlers) *gin.Engine {
 	// register system routes
 	registerSystemRoutes(router, h)
 
-	//// how we will register versioned routes
-	//v1Router := router.Group("/api/v1")
+	// register v1 routes
+	v1Router := router.Group("/api/v1")
+	v1.RegisterV1Routes(v1Router, h, cfg.Auth.SecretKey, sessionRepo)
 
 	return router
 }
