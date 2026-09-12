@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/xanity-07/openmat/internal/model"
 )
 
 type ActionType string
@@ -35,11 +36,11 @@ func (e *AppError) Error() string {
 }
 
 type Response[T any] struct {
-	Success bool       `json:"success"`
-	Status  int        `json:"status"`
-	Data    T          `json:"data,omitempty"`
-	Error   *ErrorInfo `json:"error,omitempty"`
-	Meta    *Meta      `json:"meta,omitempty"`
+	Success bool        `json:"success"`
+	Status  int         `json:"status"`
+	Data    T           `json:"data,omitempty"`
+	Error   *ErrorInfo  `json:"error,omitempty"`
+	Meta    *model.Meta `json:"meta,omitempty"`
 }
 
 type FieldError struct {
@@ -52,13 +53,6 @@ type ErrorInfo struct {
 	Message string       `json:"message"`
 	Errors  []FieldError `json:"errors,omitempty"`
 	Action  *Action      `json:"action,omitempty"`
-}
-
-type Meta struct {
-	Page       int `json:"page,omitempty"`
-	Limit      int `json:"limit,omitempty"`
-	Total      int `json:"total,omitempty"`
-	TotalPages int `json:"totalPages,omitempty"`
 }
 
 // MakeUpperCaseWithUnderscores returns a HTTP status with format example: "BAD_REQUEST"

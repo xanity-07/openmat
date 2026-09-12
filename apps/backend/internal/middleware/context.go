@@ -12,11 +12,17 @@ import (
 
 type CTXKey string
 
+func (k CTXKey) String() string {
+	return string(k)
+}
+
 const (
-	UserIDKey    CTXKey = "user_id"
-	UserRoleKey  CTXKey = "user_role"
-	LoggerKey    CTXKey = "logger"
-	SessionIDKey CTXKey = "session_id"
+	UserIDKey      CTXKey = "user_id"
+	UserRoleKey    CTXKey = "user_role" // platform role now — keep this name or rename, your call
+	LoggerKey      CTXKey = "logger"
+	SessionIDKey   CTXKey = "session_id"
+	AcademyIDKey   CTXKey = "academy_id"
+	AcademyRoleKey CTXKey = "academy_role"
 )
 
 type ContextEnhancer struct {
@@ -63,7 +69,7 @@ func (ce *ContextEnhancer) EnhanceContext() gin.HandlerFunc {
 		// Store the enhanced logger in the context so that in our downstream layers
 		// handler -> service -> repository ect, can use the same instance of the logger
 		// so that all the components it touched are grouped to be part of the same interaction
-		c.Set(LoggerKey, &contextLogger)
+		c.Set(LoggerKey.String(), &contextLogger)
 
 		// Create a new context and store the logger inside it
 		ctx := context.WithValue(c.Request.Context(), LoggerKey, &contextLogger)
@@ -95,7 +101,7 @@ func (ce *ContextEnhancer) extractUserRole(c *gin.Context) string {
 
 // GetUserID is a utility function that returns the userID from our context
 func GetUserID(c *gin.Context) string {
-	if userID, ok := c.Get(UserIDKey); ok {
+	if userID, ok := c.Get(UserIDKey.String()); ok {
 		if id, ok := userID.(string); ok {
 			return id
 		}
@@ -105,7 +111,7 @@ func GetUserID(c *gin.Context) string {
 
 // GetUserRole is a utility function that returns the userRole from our context
 func GetUserRole(c *gin.Context) string {
-	if userRole, ok := c.Get(UserRoleKey); ok {
+	if userRole, ok := c.Get(UserRoleKey.String()); ok {
 		if role, ok := userRole.(string); ok {
 			return role
 		}
@@ -115,7 +121,7 @@ func GetUserRole(c *gin.Context) string {
 
 // GetLogger is a utility function that returns the contextLogger from our context
 func GetLogger(c *gin.Context) *zerolog.Logger {
-	if loggerID, ok := c.Get(LoggerKey); ok {
+	if loggerID, ok := c.Get(LoggerKey.String()); ok {
 		if logger, ok := loggerID.(*zerolog.Logger); ok {
 			return logger
 		}
@@ -127,7 +133,7 @@ func GetLogger(c *gin.Context) *zerolog.Logger {
 
 // GetSessionID is a utility function that returns the session ID from our context
 func GetSessionID(c *gin.Context) string {
-	if sessionID, ok := c.Get(SessionIDKey); ok {
+	if sessionID, ok := c.Get(SessionIDKey.String()); ok {
 		if sID, ok := sessionID.(string); ok {
 			return sID
 		}

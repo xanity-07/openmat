@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"net/http"
 	"time"
 
@@ -21,8 +20,8 @@ type Handler struct {
 }
 
 // NewHandler creates a new base handler
-func NewHandler(s *server.Server) *Handler {
-	return &Handler{server: s}
+func NewHandler(s *server.Server) Handler {
+	return Handler{server: s}
 }
 
 // EmptyRequest will satisfy the compiler when implementing user logout
@@ -31,10 +30,10 @@ type EmptyRequest struct{}
 func (EmptyRequest) Validate() error { return nil }
 
 // HandleFunc represents a typed handler function that processes a request and returns a response
-type HandleFunc[Req validation.Validateable, Res any] func(ctx context.Context, payload Req) (Res, error)
+type HandleFunc[Req validation.Validateable, Res any] func(c *gin.Context, payload Req) (Res, error)
 
 // HandleFuncNoContent represents a types handler function that processes a request and returns no content
-type HandleFuncNoContent[Req validation.Validateable] func(ctx context.Context, payload Req) error
+type HandleFuncNoContent[Req validation.Validateable] func(c *gin.Context, payload Req) error
 
 // ResponseHandler defines the interface for handling different response types
 type ResponseHandler interface {
@@ -173,6 +172,8 @@ func handleRequest[Req validation.Validateable](
 		Dur("validation_duration", validationDuration).
 		Dur("total_duration", totalDuration).
 		Msg("Handler execution success")
+
+	responseHandler.Handle(c, result)
 
 	return nil
 }
