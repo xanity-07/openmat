@@ -15,6 +15,6 @@ func registerUserRoutes(r gin.IRouter, h *handlers.UserHandler, jwtSecret string
 	// Admin routes
 	admin := users.Group("")
 	admin.Use(middleware.RequireAuth(jwtSecret, sessionRepo))
-	admin.Use(middleware.RequireRole(string(enums.ADMIN)))
+	admin.Use(middleware.RequireRole(middleware.UserRoleKey, string(enums.ADMIN)))
 	admin.GET("", h.GetUsers())
 }
